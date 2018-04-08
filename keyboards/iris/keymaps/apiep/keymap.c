@@ -4,13 +4,15 @@
 
 extern keymap_config_t keymap_config;
 
-#define _QWERTY 0
+#define _QWERTY1 0
 #define _LOWER 1
 #define _RAISE 2
+#define _QWERTY2 3
 #define _ADJUST 16
 
 enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
+  QWERTY1 = SAFE_RANGE,
+  QWERTY2,
   LOWER,
   RAISE,
   ADJUST
@@ -27,9 +29,11 @@ enum custom_keycodes {
 #define KC_RSET RESET
 #define KC_BL_S BL_STEP
 #define KC_ADJS ADJUST
+#define KC_QWE2 QWERTY2
+#define KC_QWE1 QWERTY1
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-[_QWERTY] = KC_KEYMAP(
+[_QWERTY1] = KC_KEYMAP(
   //+----+----+----+----+----+----+             +----+----+----+----+----+----+
      GRV , 1  , 2  , 3  , 4  , 5  ,               6  , 7  , 8  , 9  , 0  ,PIPE,
   //+----+----+----+----+----+----+             +----+----+----+----+----+----+
@@ -37,9 +41,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //+----+----+----+----+----+----+             +----+----+----+----+----+----+
      ESCC, A  , S  , D  , F  , G  ,               H  , J  , K  , L  ,SCLN,QUOT,
   //+----+----+----+----+----+----+----+   +----+----+----+----+----+----+----+
-     LSFT, Z  , X  , C  , V  , B  ,ADJS,    LGUI, N  , M  ,COMM, DOT,SLSH,ENTS,
+     LSFT, Z  , X  , C  , V  , B  ,SPC ,    LGUI, N  , M  ,COMM, DOT,SLSH,ENTS,
   //+----+----+----+----+----+----+----/   \----+----+----+----+----+----+----+
                         LALT,LOWR,SPC ,      BSPC,RASE,RCTL
+  //                  +----+----+----'       '----+----+----+
+),
+[_QWERTY2] = KC_KEYMAP(
+  //+----+----+----+----+----+----+             +----+----+----+----+----+----+
+     GRV , 1  , 2  , 3  , 4  , 5  ,               6  , 7  , 8  , 9  , 0  ,PIPE,
+  //+----+----+----+----+----+----+             +----+----+----+----+----+----+
+     TAB , Q  , W  , E  , R  , T  ,               Y  , U  , I  , O  , P  ,BSPC,
+  //+----+----+----+----+----+----+             +----+----+----+----+----+----+
+     ESCC, A  , S  , D  , F  , G  ,               H  , J  , K  , L  ,SCLN,QUOT,
+  //+----+----+----+----+----+----+----+   +----+----+----+----+----+----+----+
+     LSFT, Z  , X  , C  , V  , B  ,SPC ,    LGUI, N  , M  ,COMM, DOT,SLSH,ENTS,
+  //+----+----+----+----+----+----+----/   \----+----+----+----+----+----+----+
+                        LALT,LOWR,SPC ,      SPC ,RASE,RCTL
   //                  +----+----+----'       '----+----+----+
 ),
 [_LOWER] = KC_KEYMAP(
@@ -72,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //,--------+--------+--------+--------+--------+--------.                          ,--------+--------+--------+--------+--------+--------.
     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
 //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-    RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, _______,                            _______, _______, _______, _______, _______, _______,
+    RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, _______,                            QWERTY1, QWERTY2, _______, _______, _______, _______,
 //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
     RESET  , DEBUG  , RGB_HUD, RGB_SAD, RGB_VAD, _______,                            _______, _______, _______, _______, _______, _______,
 //|--------+--------+--------+--------+--------+--------+--------.        ,--------|--------+--------+--------+--------+--------+--------|
@@ -95,12 +112,18 @@ void persistent_default_layer_set(uint16_t default_layer) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case QWERTY:
+    case QWERTY1:
     if (record->event.pressed) {
       #ifdef AUDIO_ENABLE
         PLAY_SONG(tone_qwerty);
       #endif
-      persistent_default_layer_set(1UL << _QWERTY);
+      persistent_default_layer_set(1UL << _QWERTY1);
+    }
+    return false;
+    break;
+    case QWERTY2:
+    if (record->event.pressed) {
+      persistent_default_layer_set(1UL << _QWERTY2);
     }
     return false;
     break;
