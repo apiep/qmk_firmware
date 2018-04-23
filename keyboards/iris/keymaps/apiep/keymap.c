@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //+----+----+----+----+----+----+----+   +----+----+----+----+----+----+----+
      LSFT, Z  , X  , C  , V  , B  ,SPC ,    LGUI, N  , M  ,COMM, DOT,SLSH,ENTS,
   //+----+----+----+----+----+----+----/   \----+----+----+----+----+----+----+
-                        LALT,LOWR,SPC ,      BSPC,RASE,RCTL
+                        LALT,LOWR,SPC ,      SPC ,RASE,RCTL
   //                  +----+----+----'       '----+----+----+
 ),
 [_QWERTY2] = KC_KEYMAP(
@@ -86,76 +86,68 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                  +----+----+----'       '----+----+----+
 ),
 [_ADJUST] = KEYMAP(
-//,--------+--------+--------+--------+--------+--------.                          ,--------+--------+--------+--------+--------+--------.
-    _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
-//|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-    RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, _______,                            QWERTY1, QWERTY2, _______, _______, _______, _______,
-//|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-    RESET  , DEBUG  , RGB_HUD, RGB_SAD, RGB_VAD, _______,                            _______, _______, _______, _______, _______, _______,
-//|--------+--------+--------+--------+--------+--------+--------.        ,--------|--------+--------+--------+--------+--------+--------|
-    _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
-//`--------+--------+--------+----+---+--------+--------+--------/        \--------+--------+--------+---+----+--------+--------+--------'
-                                    _______, _______, _______,                  _______, _______, _______
-//                                `--------+--------+--------'                `--------+--------+--------'
+  //,--------+--------+--------+--------+--------+--------.                          ,--------+--------+--------+--------+--------+--------.
+      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+  //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
+      RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, _______,                            QWERTY1, QWERTY2, _______, _______, _______, _______,
+  //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
+      RESET  , DEBUG  , RGB_HUD, RGB_SAD, RGB_VAD, _______,                            _______, _______, _______, _______, _______, _______,
+  //|--------+--------+--------+--------+--------+--------+--------.        ,--------|--------+--------+--------+--------+--------+--------|
+      _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
+  //`--------+--------+--------+----+---+--------+--------+--------/        \--------+--------+--------+---+----+--------+--------+--------'
+                                      _______, _______, _______,                  _______, _______, _______
+  //                                `--------+--------+--------'                `--------+--------+--------'
 )
 };
-
-#ifdef AUDIO_ENABLE
-float tone_qwerty[][2] = SONG(QWERTY_SONG);
-#endif
 
 void persistent_default_layer_set(uint16_t default_layer) {
   eeconfig_update_default_layer(default_layer);
   default_layer_set(default_layer);
 }
 
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case QWERTY1:
-    if (record->event.pressed) {
-      #ifdef AUDIO_ENABLE
-        PLAY_SONG(tone_qwerty);
-      #endif
-      persistent_default_layer_set(1UL << _QWERTY1);
-    }
-    return false;
+      if (record->event.pressed) {
+        persistent_default_layer_set(1UL << _QWERTY1);
+      }
+      return false;
     break;
     case QWERTY2:
-    if (record->event.pressed) {
-      persistent_default_layer_set(1UL << _QWERTY2);
-    }
-    return false;
+      if (record->event.pressed) {
+        persistent_default_layer_set(1UL << _QWERTY2);
+      }
+      return false;
     break;
 
     case LOWER:
-    if (record->event.pressed) {
-      layer_on(_LOWER);
-      update_tri_layer(_LOWER, _RAISE, _ADJUST);
-    } else {
-      layer_off(_LOWER);
-      update_tri_layer(_LOWER, _RAISE, _ADJUST);
-    }
-    return false;
+      if (record->event.pressed) {
+        layer_on(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
     break;
 
     case RAISE:
-    if (record->event.pressed) {
-      layer_on(_RAISE);
-      update_tri_layer(_LOWER, _RAISE, _ADJUST);
-    } else {
-      layer_off(_RAISE);
-      update_tri_layer(_LOWER, _RAISE, _ADJUST);
-    }
+      if (record->event.pressed) {
+        layer_on(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
     return false;
     break;
 
     case ADJUST:
-    if (record->event.pressed) {
-      layer_on(_ADJUST);
-    } else {
-      layer_off(_ADJUST);
-    }
+      if (record->event.pressed) {
+        layer_on(_ADJUST);
+      } else {
+        layer_off(_ADJUST);
+      }
     break;
   }
   return true;
